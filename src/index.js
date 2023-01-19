@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 
 const NoteApp = () => {
-  const [notes, setNotes] = useState([]);
+  const notesData = localStorage.getItem('notes');
+  const [notes, setNotes] = useState(notesData || []);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState();
+
+  useEffect(() => {
+    localStorage.setItem('notes', JSON.parse(notes));
+  });
 
   const addNote = (e) => {
     e.preventDefault();
@@ -41,37 +46,29 @@ const NoteApp = () => {
   );
 }
 
-// const App = (props) => {
-//   const [count, setCount] = useState(props.count);
-//   const [text, setText] = useState(props.text);
+const App = (props) => {
+  const [count, setCount] = useState(props.count);
+  const [text, setText] = useState(props.text);
 
-//   const increment = () => {
-//     setCount(count + 1);
-//   }
+  useEffect(() => {
+    document.title = count;
+  });
 
-//   const decrement = () => {
-//     setCount(count - 1);
-//   }
+  return (
+    <div>
+      <p>The Current {text || 'count'} is {count}</p>
+      <button onClick={() => setCount(count - 1)}>-1</button>
+      <button onClick={() => setCount(props.count)}>Reset</button>
+      <button onClick={() => setCount(count + 1)}>+1</button>
+      <input type='text' value={text} onChange={(e) => setText(e.target.value)} />
+    </div>
+  );
+}
 
-//   const reset = () => {
-//     setCount(props.count);
-//   }
-
-//   return (
-//     <div>
-//       <p>The Current {text || 'count'} is {count}</p>
-//       <button onClick={increment}>+1</button>
-//       <button onClick={decrement}>-1</button>
-//       <button onClick={reset}>Reset</button>
-//       <input type='text' value={text} onChange={(e) => setText(e.target.value)} />
-//     </div>
-//   );
-// }
-
-// App.defaultProps = {
-//   count: 0,
-//   text: ''
-// }
+App.defaultProps = {
+  count: 0,
+  text: ''
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
